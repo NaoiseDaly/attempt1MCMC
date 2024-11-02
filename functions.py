@@ -1,12 +1,18 @@
 import numpy as np
 from scipy.stats import uniform
 import matplotlib.pyplot as plt
+import logging 
+from time import perf_counter
+logger = logging.getLogger(__name__) #could output to file here
 
     
 def basic_metropolis_hastings(X0, max_t_iterations=10**3):
     """very simple version for this example 
     
     assumes 1 dimension in X"""
+
+    #start timing here
+    start_time = perf_counter()
 
     def log_unnormalised_target_pdf(x):
         """standard normal in this example"""
@@ -44,6 +50,13 @@ def basic_metropolis_hastings(X0, max_t_iterations=10**3):
             X_t = proposed_value 
         #record the new state of the chain
         chain[t] = X_t
+
+    #end timing now
+    end_time = perf_counter()
+    #record timing
+    logger.info(
+        f"chain took {round(end_time-start_time,3)} secs to simulate {max_t_iterations} iterations"
+    )
 
     return chain
 
