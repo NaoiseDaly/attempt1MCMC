@@ -1,5 +1,7 @@
 import numpy as np
 from scipy.stats import uniform
+import matplotlib.pyplot as plt
+
     
 def basic_metropolis_hastings(X0, max_t_iterations=10**3):
     """very simple version for this example 
@@ -44,3 +46,31 @@ def basic_metropolis_hastings(X0, max_t_iterations=10**3):
         chain[t] = X_t
 
     return chain
+
+def simply_plot_the_chain(chain, with_burn_in = None):
+    """plot the chain over time
+    
+    optionally view the chain after different burn in points,
+    it would be preferably to pick an odd number of burn in points"""
+    if not with_burn_in:
+        fig, ax = plt.subplots()
+        ax.plot(chain, "-")
+        ax.set_xlabel("t")
+        ax.set_ylabel("X")
+        plt.show()
+        return
+    
+    with_burn_in.insert(0, 0) #show the whole chain for reference
+
+    num_subplots = len(with_burn_in)
+    num_rows  = (num_subplots+1) //2
+    fig, axes = plt.subplots( nrows = num_rows, ncols = 2)
+    axes = np.array(axes).flatten() # easier to access subplots this way
+
+    
+    for burn_in_point, subplot in zip(with_burn_in, axes):
+        subplot.plot(chain[burn_in_point:], "-")
+        subplot.set_xlabel("t")
+        subplot.set_ylabel("X")
+        subplot.set_title(f"burn in after {burn_in_point}")
+    plt.show()

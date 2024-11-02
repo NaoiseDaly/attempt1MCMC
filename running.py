@@ -1,9 +1,4 @@
 from functions import *
-import matplotlib.pyplot as plt
-first_chain = basic_metropolis_hastings(-5, 600)
+first_chain = basic_metropolis_hastings(-5, 6000)
 
-fig, ax = plt.subplots()
-ax.plot(first_chain, "-")
-ax.set_xlabel("t")
-ax.set_ylabel("X")
-plt.show()
+simply_plot_the_chain(first_chain, [100, 200, 300] )
