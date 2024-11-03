@@ -101,10 +101,12 @@ def poisson_3_MCMC(X0, max_t_iterations=10**3):
     def log_unnormalised_target_pdf(x):
         """poisson with rate 3 in this example
         assumes x is an integer"""
-        if x <0:
+        if x < 0:
             return -np.inf #log of zero
+        elif x == 0:
+            return -3 #getting overflows if i do ln(factorial(x)) but gamma(0) is infinity
         else:
-            return (x*np.log(3)) - loggamma(x) # log of factorial of x
+            return -3 + (x*np.log(3)) - loggamma(x) # log of factorial of x
     
     def log_proposal_pdf(x, conditional):
         """steps +/- 1 from conditional with equal chance
@@ -112,7 +114,7 @@ def poisson_3_MCMC(X0, max_t_iterations=10**3):
         if abs(x - conditional) == 1:
             return np.log(.5)
         else:
-            return -np.ninf #log of zero
+            return -np.inf #log of zero
     
     def proposal_sample(conditional):
         """ steps +/- 1 from conditional with equal chance """
@@ -124,7 +126,6 @@ def poisson_3_MCMC(X0, max_t_iterations=10**3):
     def log_alpha(current, new):
         top = log_unnormalised_target_pdf(new) + log_proposal_pdf(current, new)
         bottom = log_unnormalised_target_pdf(current) + log_proposal_pdf(new, current)
-        logger.info(f"\t alpha is {top} - {bottom}")
         return min( 0, top - bottom )
     
     chain = np.zeros(max_t_iterations)
@@ -138,9 +139,7 @@ def poisson_3_MCMC(X0, max_t_iterations=10**3):
         log_u = log_unif_rvs[t]
         #get alpha on log scale
         log_alpha_prob = log_alpha(X_t, proposed_value)
-        logger.info(
-            f"u={log_u}, proposed {proposed_value} has alpha {log_alpha_prob}"
-        )
+        
         #decide if the chain accepts or rejects the move
         #this is setting X_t+1 but no point in creating another variable
         if log_u <= log_alpha_prob:
