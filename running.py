@@ -5,9 +5,9 @@ logger = logging.getLogger(__name__)
 logging.basicConfig( level=logging.INFO)
 
 
-# first_chain = basic_metropolis_hastings(-5, 6000)
+first_chain = basic_metropolis_hastings(-5, 6000)
 
-# simply_plot_the_chain(first_chain, [100, 200, 300] )
+simply_plot_the_chain(first_chain, [100, 200, 300] )
 
 first_poisson_chain = poisson_3_MCMC(0, 6000)
 simply_plot_the_chain(first_poisson_chain, fmt_plt="kD")
